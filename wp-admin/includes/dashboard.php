@@ -4,6 +4,7 @@
  *
  * @package WordPress
  * @subpackage Administration
+ *	@subpackage Users
  */
 
 /**
@@ -276,6 +277,16 @@ function wp_dashboard_right_now() {
 		?>
 		<li class="comment-count"><a href="edit-comments.php"><?php echo $text; ?></a></li>
 		<?php
+			$total_user = count_users();
+			$user = $total_user["total_users"];
+			if($user > 1){
+				$str = "Users";
+			}else{
+				$str = "User";
+			}
+		?>
+		<li class="user-count"><a href="users.php"><?php echo $user." ".$str; ?></a></li>
+		<?php
 		$moderated_comments_count_i18n = number_format_i18n( $num_comm->moderated );
 		/* translators: Number of comments in moderation */
 		$text = sprintf( _nx( '%s in moderation', '%s in moderation', $num_comm->moderated, 'comments' ), $moderated_comments_count_i18n );
@@ -287,8 +298,10 @@ function wp_dashboard_right_now() {
 				echo ' hidden';
 			}
 		?>"><a href="edit-comments.php?comment_status=moderated" aria-label="<?php esc_attr_e( $aria_label ); ?>"><?php echo $text; ?></a></li>
+
 		<?php
 	}
+	
 
 	/**
 	 * Filters the array of extra elements to list in the 'At a Glance'
@@ -316,7 +329,7 @@ function wp_dashboard_right_now() {
 	if ( ! is_network_admin() && ! is_user_admin() && current_user_can( 'manage_options' ) && '0' == get_option( 'blog_public' ) ) {
 
 		/**
-		 * Filters the link title attribute for the 'Search Engines Discouraged'
+		 * Filters the page title attribute for the 'Search Engines Discouraged'
 		 * message displayed in the 'At a Glance' dashboard widget.
 		 *
 		 * Prior to 3.8.0, the widget was named 'Right Now'.
